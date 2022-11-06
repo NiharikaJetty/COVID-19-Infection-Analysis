@@ -9,3 +9,16 @@ According to Johns Hopkins Medicine (https://www.hopkinsmedicine.org/health/cond
 #### DATA INTEGRITY
 Upon loading and preparing data in R, I noticed some potential issues to keep in mind. The "death" column had to be cleaned, since there were too many distinct variables. A "0" value represented no death, whereas a "1" value meant death, but certain values were inputed as dates, therefore the data needed to be standardized. However, for the recovery column, it is unclear whether a "0" value represents a successful or unsuccesfull recovery of a patient. Attempts to determine this by comparing it to death values failed as the values were not consistent. Furthermore, other variables such as "case in country" and "x" are missing more than 1/3 of their values altogether. This is something to keep in mind while evaluating the integrity of this data set.
 
+I observed the following trends after applying statistical principles and Welch Two-Sample T. Tests to determine statistical significance:
+- Total death rate is 5.806%
+- Recovery rate is 14.654%
+
+DEATH:
+- Average age of dead person is 68.5 years
+- Youngest age who died is 36 years
+- Oldest age who died is 89 years
+
+ALIVE:
+- Average age of survivor is 48.1 years
+- Youngest survivor is 4 months old
+- Oldest survivor is 96 years
