@@ -1,7 +1,5 @@
 # COVID-19 Infection Analysis
 
-**COVID19 Infection Analysis**
-
 This project utilizes R studio to perform a statistical analysis on Covid-19 infection data. The analysis is performed on an international dataset from 2020.
 
 **INTRODUCTION**
