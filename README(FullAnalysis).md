@@ -59,6 +59,8 @@ ALIVE:
 With millions dying from COVID-19, there were many arguments regarding whether the average age of those who die from this virus is higher than the age of those who survive. After conducting the Welch 2-Sample T-Test (99% confidence interval), I got the following values:  t = -10.839, df = 72.234, p-value < 2.2e-16
 
 - Since the p-value is < 0.05, we reject the null hypothesis. This test proves that there is a statistical significance in the argument that the average age of survivors is younger than that of the dead.
+Is there statistical significance that the average age of survivors is younger than the age of the dead?
+- p-value is < 0.05, therefore, we reject the null hypothesis. This test proves that there is a statistical significance in the argument that the average age of survivors is younger than that of the dead.
 
 Active Cases = Number of Confirmed Cases - Number of Recovered Cases - Number of Death Cases
 
