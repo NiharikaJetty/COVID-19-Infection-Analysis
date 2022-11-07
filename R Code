@@ -1,0 +1,142 @@
+#Setting up necessary packages
+rm(list = ls()) #Removes all previously stored variables
+install.packages("Hmisc") #Data analytics package
+#Standard packages
+pckgs <- c("tidyverse", "lubridate", "ggplot2", "readr", "tidyr", "dplyr", "skimr", "janitor", "scales", "Hmisc")
+install.packages(pckgs)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(readr)
+library(tidyr)
+library(dplyr)
+library(skimr)
+library(janitor)
+library(scales)
+
+library(MASS)
+#Renaming main file for ease
+covid19 <- COVID19_line_list_data
+set2 <- covid_19_data
+
+#CLEANING DATA
+## Getting an overview of data
+describe(covid19) #Hmisc function 
+head(covid19)
+
+### Immeditaely, we notice the following:
+### How many values in each section are missing: Country:197, reporting.date: 1, summary: 5, gender: 183, age: 242, symptom_onset: 522
+### If_onset_approximated: 525, hosp_visit_date: 578, exposure_start: 957, exposure_end: 744, from.Wuhan: 4, symptom: 815
+
+#Death is 0 value if the person didn't die, 1 if they did, however some listed it as a date so we need to fix that
+
+covid19$deathnew <- as.integer(covid19$death!= 0) #Clean death
+unique(covid19$deathnew) #Checking if resulting values are either 0 or 1
+#death rate
+sum(covid19$deathnew)/nrow(covid19)*100
+#Death rate is 5.806%
+
+## an issue with this dataset is that 
+#Recovered is 0 value if the person recover, 1 if they did, however some listed it as a date so we need to fix that
+
+covid19$recoverednew <- as.integer(covid19$recovered!= 0)
+unique(covid19$recoverednew)
+sum(covid19$recoverednew)/nrow(covid19)*100
+#Recovery rate is 14.654%
+
+#Creating new subsets of dead and alive people for further analysis
+dead = subset(covid19, deathnew == 1)
+alive = subset(covid19, deathnew == 0)
+
+#Analysis of those who died
+table(dead$from.Wuhan) # 29 deaths not from Wuhan, 34 were from Wuhan
+#China had the highest deaths
+table(dead$country)
+# China      France   Hong Kong        Iran       Japan Phillipines South Korea      Taiwan 
+# 39           2           2           4           5           1           9           1 
+
+#na.rm will remove NA values
+
+table(dead$gender) #both 14 male and 14 female dead
+#Average age of dead person is 68.5 years
+mean(dead$age, na.rm = TRUE)
+#Youngest age who died is 36 years
+min(dead$age, na.rm = TRUE)
+#Oldest age who died is 89 years
+max(dead$age, na.rm = TRUE)
+
+# Analysis of people who survived
+table(alive$country)
+# Afghanistan          Algeria   Australia     Austria     Bahrain     Belgium    Cambodia      Canada       China     Croatia       Egypt     Finland      France     Germany 
+#       1                  1          15           2          17           1           1          12         158           1           1           1          37          54 
+# Hong Kong       India        Iran      Israel       Italy       Japan      Kuwait     Lebanon    Malaysia       Nepal    Phillipines      Russia   Singapore   South Korea 
+#       92           3          14           1           3         185           9           1          23           1           2            2          93         105 
+# Spain   Sri Lanka      Sweden    Switzerland      Taiwan    Thailand         UAE          UK         USA     Vietnam 
+#   34           1           1         1              33          41            21          20          18         16 
+
+
+table(alive$gender) # 368 female survivors & 476 male survivors
+# Average age of survivor is 48.1 years
+mean(alive$age, na.rm = TRUE)
+# Youngest survivor is 4 months old
+min(alive$age, na.rm = TRUE)
+# Oldest survivor is 96 years
+max(alive$age, na.rm = TRUE)
+
+
+
+
+
+#We can see a discrepancy in the age groups and genders of those who survived, however, we have to test if it is statistically significant. 
+# Testing significance of theory that survivors average age is younger than those who died:
+t.test(alive$age, dead$age, alternative= "two.sided", conf.level = 0.99)
+    #Welch Two Sample t-test
+    
+    # data:  alive$age and dead$age
+    # t = -10.839, df = 72.234, p-value < 2.2e-16
+    # alternative hypothesis: true difference in means is not equal to 0
+    # 99 percent confidence interval:
+    #  -25.52122 -15.50661
+    # sample estimates:
+    #    mean of x        mean of y 
+    #    48.07229         68.58621 
+
+# p-value is < 0.05, therefore, we reject the null hypothesis. This test proves that there is a statistical significance in the argument that the average age of survivors is younger than that of the dead. 
+
+#Previously, we only used tables to see the statistics between genders in survival and deaths. 
+# T-Test to see significance of gender in deaths and survivors:
+men = subset(covid19, gender = "male")
+women = subset(covid19, gender = "female")
+
+t.test(men$deathnew, women$deathnew, alternative= "two.sided", conf.level = 0.99)
+      # 	Welch Two Sample t-test
+      
+      # data:  men$deathnew and women$deathnew
+      # t = 0, df = 2168, p-value = 1
+      # alternative hypothesis: true difference in means is not equal to 0
+      # 99 percent confidence interval:
+      #   -0.02589798  0.02589798
+      # sample estimates:
+      #   mean of x          mean of y 
+      #   0.05806452         0.05806452 
+# p-value is > 0.05, therefore, we fail to reject the null hypothesis that there are significantly more men who die from covid than women.
+# Gender has no statistical significance in survivors of COVID-19
+
+
+
+# Pie chart of types of cases:
+confirmed <- sum(set2$Confirmed)
+deaths <- sum(set2$Deaths)
+recovered <- sum(set2$Recovered)
+TotalCases <- confirmed + deaths + recovered 
+
+slices <- c(confirmed, deaths, recovered)
+lbls <- c("Confirmed","Deaths","Recovered")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct)
+lbls <- paste(lbls, "%", sep="")
+pie(slices, labels = lbls, col = rainbow(length(lbls)), main = "Percentage of Case Types")
+
+# Distribution of ages in confirmed cases
+hist(covid19$age, main = "Age Distribution of Confirmed Cases", xlab = "Ages")
+
