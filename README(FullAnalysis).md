@@ -65,9 +65,13 @@ Active Cases = Number of Confirmed Cases - Number of Recovered Cases - Number of
 Increase in number of Active Cases is probably an indication of Recovered case or Death case number is dropping in comparison to number of Confirmed Cases drastically. Will look for the conclusive evidence for the same in the notebook ahead.
 
 Percentage of all Types of Cases
+
+
 ![Pie of Case Types](https://user-images.githubusercontent.com/71042140/200218794-965caf79-7de2-48bf-b348-2ab1a3c13a8b.png)
 
 Distribution of Age across study
+
+
 ![file_show (1)](https://user-images.githubusercontent.com/71042140/200218873-233643c4-74a8-4c9b-abc4-be939930d30d.png)
 
 
